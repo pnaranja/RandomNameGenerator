@@ -9,18 +9,20 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var currentText = "Paul"
+    @State private var buttonIndex = 0
+
     private let names = ["Adam", "Bob", "Jennifer", "Mae", "Paul"]
 
-    func randomName() -> String{
+    func randomName() -> String! {
         let temp = names.randomElement()
-        return names.randomElement() ?? "Paul"
+        return if temp == currentText { randomName() } else { temp }
     }
 
     var body: some View {
         HStack(spacing: 0) {
             VStack(spacing: 10 /*spacing between each major element in the Vstack*/) {
                 Button(action: {
-                    // Add your home button action here
+                    buttonIndex = 0
                 }) {
                     HStack {
                         Image(systemName: "house.fill")
@@ -31,13 +33,15 @@ struct ContentView: View {
                     }
                 }
                 .buttonStyle(.bordered)
+                .background(buttonIndex == 0 ? Color.gray : Color.white)
+                .cornerRadius(8)
                 .frame(width: 120, height: 40, alignment: .leading)  //size of the frame of the button.  Leading alignment to align to the left
 
                 Button(action: {
-                    // Add your favorites button action here
+                    buttonIndex = 1
                 }) {
                     HStack {
-                        Image(systemName: "house.fill")
+                        Image(systemName: "heart.fill")
                             .foregroundColor(.black)
                         Text("Favorites")
                             .foregroundColor(.black)
@@ -45,11 +49,13 @@ struct ContentView: View {
                     }
                 }
                 .buttonStyle(.bordered)
+                .background(buttonIndex == 1 ? Color.gray : Color.white)
+                .cornerRadius(8)
                 .frame(width: 120, height: 40, alignment: .leading)  //size of the frame of the button.  Leading alignment to align to the left
 
-                Spacer()
+                Spacer() // Empty space all the way down from the last element
             }
-            .frame(width: UIScreen.main.bounds.width * 0.35)
+            .frame(width: UIScreen.main.bounds.width * 0.35) // Take 35% of total width of screen
             .background(Color.white)
             .padding(.top, 20)
             .padding(.leading, 20)
@@ -65,7 +71,7 @@ struct ContentView: View {
                     .cornerRadius(8)
                 HStack {
                     Button(action: {
-                               currentText = randomName()
+                        currentText = randomName()
                     }) {
                         Text("Next Words")
                             .foregroundColor(.black)
@@ -93,7 +99,7 @@ struct ContentView: View {
                 }
                 Spacer()
             }
-            .frame(width: UIScreen.main.bounds.width * 0.65)
+            .frame(width: UIScreen.main.bounds.width * 0.65) // Take 65% of total width of screen
             .background(Color.blue.opacity(0.3))
         }
     }

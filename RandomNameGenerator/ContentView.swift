@@ -7,9 +7,61 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct ShowWordsView: View {
+    @Binding var currentText: String
+    @Binding var markedFavorite: Bool
+    var randomName: () -> String?
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Spacer()
+            Text(currentText)
+                .foregroundColor(.white)
+                .font(.system(size: 30, weight: .bold))
+                .padding(.horizontal, 30)  // Adds more horizontal spacing
+                .padding(.vertical, 15)  // Adds more vertical spacing
+                .background(Color.blue.opacity(10.0))
+                .cornerRadius(8)
+            HStack {
+                Button(action: {
+                    currentText = randomName() ?? ""
+                }) {
+                    Text("Next Words")
+                        .foregroundColor(.black)
+                        .font(.system(size: 11, weight: .bold))
+                }
+                .padding()
+                .background(Color.gray)
+                .cornerRadius(8)
+                .frame(width: 100, height: 30, alignment: .leading)  //size of the frame of the button.  Leading alignment to align to the left
+
+                Button(action: {
+                    markedFavorite = !markedFavorite
+                }) {
+                    Image(systemName: "heart.fill")
+                        .foregroundColor(markedFavorite ? .white :.black)
+
+                    Text("Like")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundColor(.black)
+                }
+                .padding()
+                .background(Color.gray)
+                .cornerRadius(8)
+                .frame(width: 100, height: 30, alignment: .leading)  //size of the frame of the button.  Leading alignment to align to the left
+
+            }
+            Spacer()
+        }
+        .frame(width: UIScreen.main.bounds.width * 0.65)  // Take 65% of total width of screen
+        .background(Color.blue.opacity(0.3))
+    }
+}
+
+struct MainView: View {
     @State private var currentText = "Paul"
     @State private var buttonIndex = 0
+    @State private var markedFavorite: Bool = false
 
     private let names = ["Adam", "Bob", "Jennifer", "Mae", "Paul"]
 
@@ -53,58 +105,19 @@ struct ContentView: View {
                 .cornerRadius(8)
                 .frame(width: 120, height: 40, alignment: .leading)  //size of the frame of the button.  Leading alignment to align to the left
 
-                Spacer() // Empty space all the way down from the last element
+                Spacer()  // Empty space all the way down from the last element
             }
-            .frame(width: UIScreen.main.bounds.width * 0.35) // Take 35% of total width of screen
+            .frame(width: UIScreen.main.bounds.width * 0.35)  // Take 35% of total width of screen
             .background(Color.white)
             .padding(.top, 20)
             .padding(.leading, 20)
 
-            VStack(spacing: 20) {
-                Spacer()
-                Text(currentText)
-                    .foregroundColor(.white)
-                    .font(.system(size: 30, weight: .bold))
-                    .padding(.horizontal, 30)  // Adds more horizontal spacing
-                    .padding(.vertical, 15)  // Adds more vertical spacing
-                    .background(Color.blue.opacity(10.0))
-                    .cornerRadius(8)
-                HStack {
-                    Button(action: {
-                        currentText = randomName()
-                    }) {
-                        Text("Next Words")
-                            .foregroundColor(.black)
-                            .font(.system(size: 11, weight: .bold))
-                    }
-                    .padding()
-                    .background(Color.gray)
-                    .cornerRadius(8)
-                    .frame(width: 100, height: 30, alignment: .leading)  //size of the frame of the button.  Leading alignment to align to the left
-
-                    Button(action: {
-                    }) {
-                        Image(systemName: "heart")
-                            .foregroundColor(.black)
-
-                        Text("Like")
-                            .font(.system(size: 11, weight: .bold))
-                            .foregroundColor(.black)
-                    }
-                    .padding()
-                    .background(Color.gray)
-                    .cornerRadius(8)
-                    .frame(width: 100, height: 30, alignment: .leading)  //size of the frame of the button.  Leading alignment to align to the left
-
-                }
-                Spacer()
-            }
-            .frame(width: UIScreen.main.bounds.width * 0.65) // Take 65% of total width of screen
-            .background(Color.blue.opacity(0.3))
+            ShowWordsView(currentText: $currentText, markedFavorite:  $markedFavorite, randomName: randomName)
         }
+
     }
 }
 
 #Preview {
-    ContentView()
+    MainView()
 }

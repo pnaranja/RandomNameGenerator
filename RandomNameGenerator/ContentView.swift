@@ -53,7 +53,8 @@ struct ShowWordsView: View {
             }
             Spacer()
         }
-        .frame(width: UIScreen.main.bounds.width * 0.65)  // Take 65% of total width of screen
+        // proportional layout relative to the parent container. This improves adaptability across orientations, iPad multitasking, and future devices.
+        .containerRelativeFrame(.horizontal, count: 20, span: 13, spacing: 0, alignment: .center)
         .background(Color.blue.opacity(0.3))
     }
 }
@@ -107,7 +108,8 @@ struct MainView: View {
 
                 Spacer()  // Empty space all the way down from the last element
             }
-            .frame(width: UIScreen.main.bounds.width * 0.35)  // Take 35% of total width of screen
+        // proportional layout relative to the parent container. This improves adaptability across orientations, iPad multitasking, and future devices.
+            .containerRelativeFrame(.horizontal, count: 20, span: 7, spacing: 0, alignment: .center)
             .background(Color.white)
             .padding(.top, 20)
             .padding(.leading, 20)

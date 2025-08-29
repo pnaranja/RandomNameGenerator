@@ -7,9 +7,53 @@
 
 import SwiftUI
 
+struct ShowFavoritesView: View {
+    @Binding var favoriteNames: [String]
+
+    var body: some View {
+        ZStack {
+
+            Color.blue.opacity(0.3).ignoresSafeArea(.all)
+            VStack(spacing: 20) {
+                Text(
+                    "You have \(favoriteNames.count) \(favoriteNames.count == 1 ? "favorite" : "favorites")"
+                )
+
+                if favoriteNames.isEmpty {
+                    Spacer()
+                } else {
+
+                    List {
+                        ForEach(favoriteNames, id: \.self) { (name: String) in
+
+                            HStack {
+                                Image(systemName: "heart.fill")
+                                    .foregroundColor(.black)
+
+                                Text(name)
+
+                            }
+                        }
+                    }
+                    // List has a "default" background color.  This clears that default color
+                    // Allows the blue background to extend past the list
+                    .scrollContentBackground(.hidden)
+                    .listRowBackground(Color.clear)
+
+                }
+
+            }.containerRelativeFrame(
+                .horizontal, count: 20, span: 13, spacing: 0, alignment: .center)
+
+        }
+
+    }
+
+}
+
 struct ShowWordsView: View {
     @Binding var currentText: String
-    @Binding var markedFavorite: Bool
+    @Binding var favoriteNames: [String]
     var randomName: () -> String?
 
     var body: some View {
@@ -36,10 +80,17 @@ struct ShowWordsView: View {
                 .frame(width: 100, height: 30, alignment: .leading)  //size of the frame of the button.  Leading alignment to align to the left
 
                 Button(action: {
-                    markedFavorite = !markedFavorite
+
+                    if !favoriteNames.contains(currentText) {
+                        favoriteNames.append(currentText)
+                    } else {
+                        favoriteNames.removeAll { $0 == currentText }
+                    }
+
+                    print("Favorites: \(favoriteNames)")
                 }) {
                     Image(systemName: "heart.fill")
-                        .foregroundColor(markedFavorite ? .white :.black)
+                        .foregroundColor(favoriteNames.contains(currentText) ? .black : .white)
 
                     Text("Like")
                         .font(.system(size: 11, weight: .bold))
@@ -62,9 +113,9 @@ struct ShowWordsView: View {
 struct MainView: View {
     @State private var currentText = "Paul"
     @State private var buttonIndex = 0
-    @State private var markedFavorite: Bool = false
+    @State private var favoriteNames: [String] = []
 
-    private let names = ["Adam", "Bob", "Jennifer", "Mae", "Paul"]
+    private let names: [String] = ["Adam", "Bob", "Jennifer", "Mae", "Paul"]
 
     func randomName() -> String! {
         let temp = names.randomElement()
@@ -108,13 +159,20 @@ struct MainView: View {
 
                 Spacer()  // Empty space all the way down from the last element
             }
-        // proportional layout relative to the parent container. This improves adaptability across orientations, iPad multitasking, and future devices.
+            // proportional layout relative to the parent container. This improves adaptability across orientations, iPad multitasking, and future devices.
             .containerRelativeFrame(.horizontal, count: 20, span: 7, spacing: 0, alignment: .center)
             .background(Color.white)
             .padding(.top, 20)
             .padding(.leading, 20)
 
-            ShowWordsView(currentText: $currentText, markedFavorite:  $markedFavorite, randomName: randomName)
+            if buttonIndex == 0 {
+                ShowWordsView(
+                    currentText: $currentText, favoriteNames: $favoriteNames, randomName: randomName
+                )
+            } else {
+                ShowFavoritesView(favoriteNames: $favoriteNames)
+            }
+
         }
 
     }

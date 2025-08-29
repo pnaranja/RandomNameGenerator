@@ -61,10 +61,10 @@ struct ShowWordsView: View {
             Spacer()
             Text(currentText)
                 .foregroundColor(.white)
-                .font(.system(size: 30, weight: .bold))
-                .padding(.horizontal, 30)  // Adds more horizontal spacing
-                .padding(.vertical, 15)  // Adds more vertical spacing
-                .background(Color.blue.opacity(10.0))
+                .font(.system(size: 23, weight: .bold))
+                .minimumScaleFactor(0.3)
+                .frame(width: 230, height: 60, alignment: .center)  //size of the frame of the name and center aligned.  
+                .background(Color.blue.opacity(1.0))
                 .cornerRadius(8)
             HStack {
                 Button(action: {
@@ -87,7 +87,6 @@ struct ShowWordsView: View {
                         favoriteNames.removeAll { $0 == currentText }
                     }
 
-                    print("Favorites: \(favoriteNames)")
                 }) {
                     Image(systemName: "heart.fill")
                         .foregroundColor(favoriteNames.contains(currentText) ? .black : .white)
